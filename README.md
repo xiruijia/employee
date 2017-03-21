@@ -1,3 +1,4 @@
+![Alt text](/path/to/img.jpg)
 # 手机端员工管理系统
 
 ## 后台java使用技术
