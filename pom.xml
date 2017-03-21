@@ -3,7 +3,7 @@
   <groupId>com.bandaoti</groupId>
   <artifactId>employee</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  
+  <packaging>jar</packaging>
   <properties>
 		<java.version>1.8</java.version>
 		<druid.version>1.0.27</druid.version>
@@ -60,16 +60,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<!-- 微信解密包 -->
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk16</artifactId>
-			<version>1.46</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
 		</dependency>
 		<!-- 只需引入spring-boot-devtools 即可实现热部署 -->
 		<dependency>
