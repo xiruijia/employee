@@ -17,8 +17,8 @@ bdtApp.controller('userController', function($scope,$stateParams, HttpService, U
 		HttpService.post("/employee/login",$scope.user).then(function(res) {
 			if (res.code == 0) {
 				$scope.hideError = true;
-				user = res.data;
-				$scope.user=user;
+				$scope.user=res.data.user;
+				$scope.roles=res.data.roles;
 				$scope.step = 'user';
 			} else {
 				$scope.hideError = false;
