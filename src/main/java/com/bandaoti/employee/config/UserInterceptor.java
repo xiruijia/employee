@@ -31,13 +31,16 @@ public class UserInterceptor extends BaseController implements HandlerIntercepto
 				boolean tag=ea.value().length==0;
 				for(String role:ea.value()){
 					if(roles.contains(role)){
-						tag=true;
+						return true;
 					}
 				}
 				for(String role:ea.reject()){
 					if(roles.contains(role)){
-						tag=false;
+						throw new ControllerException(ReturnCode.EMP_ROLE_NOT_FOUND);
 					}
+				}
+				if(!tag){
+					throw new ControllerException(ReturnCode.EMP_ROLE_NOT_FOUND);
 				}
 				return tag;
 			}else{

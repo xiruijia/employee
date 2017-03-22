@@ -34,7 +34,7 @@ public class EmployeeController extends BaseController {
 	private EmployeeService empService;
 	@Autowired
 	private StringRedisTemplate sRedis;
-	@EmpAuthority({"admin","test"})
+	@EmpAuthority({})
 	@PostMapping("getEmployee")
 	public ControllerResult getEmployee() throws ControllerException {
 		Map<String,Object> result=new HashMap<>();
@@ -71,7 +71,6 @@ public class EmployeeController extends BaseController {
 		emp.setPassword(null);
 		return success(emp);
 	}
-	@EmpAuthority({"admin","test"})
 	@PostMapping("login")
 	public ControllerResult login(HttpServletResponse response) throws ControllerException {
 		String username = getParamNotNull("name");

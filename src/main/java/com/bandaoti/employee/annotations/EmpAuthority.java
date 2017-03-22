@@ -16,11 +16,11 @@ public @interface EmpAuthority {
 	 * 允许访问的角色
 	 * @return
 	 */
-	String[] value() default "";
+	String[] value() default {};
 	
 	/**
 	 * 拒绝访问的角色
 	 * @return
 	 */
-	String[] reject() default "";
+	String[] reject() default {};
 }
