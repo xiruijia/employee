@@ -7,6 +7,7 @@ public enum ReturnCode {
 	USER_NOT_LOGIN(3, "用户未登录"), 
 	ACCOUNT_PASSWORD_ERROR(4, "帐号或密码错误"),
 	ACCOUNT_EXIST_ERROR(100,"帐号已存在"),
+	SMS_CODE_ERROR(200,"验证码错误"),
 	;
 
 	private Integer key;

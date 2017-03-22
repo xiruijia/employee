@@ -40,7 +40,7 @@ public class BaseController {
 	public String getParamNotNull(String key) throws ControllerException{
 		String value=request.getParameter(key);
 		if(!StringUtils.isEmpty(value))return value;
-		throw new ControllerException(ReturnCode.FAILE,key+"不能为空");
+		throw new ControllerException(ReturnCode.FAILE,true,key+"不能为空");
 	}
 	public ControllerResult success(){
 		return new ControllerResult(ReturnCode.SUCCESS);
@@ -50,6 +50,9 @@ public class BaseController {
 	}
 	public ControllerResult faile(){
 		return new ControllerResult(ReturnCode.FAILE);
+	}
+	public ControllerResult faile(ReturnCode rc){
+		return new ControllerResult(rc);
 	}
 	public ControllerResult faile(Object data){
 		return new ControllerResult(ReturnCode.FAILE,data);

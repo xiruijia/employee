@@ -110,9 +110,6 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.bandaoti.employee.entity.Employee">
-    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
     insert into employee (id, status, code, 
       name, gender, idcard, 
       mobile, email, password, 
@@ -125,12 +122,11 @@
       #{updateBy,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.bandaoti.employee.entity.Employee">
-    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
-      SELECT LAST_INSERT_ID()
-    </selectKey>
     insert into employee
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      id,
+      <if test="id != null">
+        id,
+      </if>
       <if test="status != null">
         status,
       </if>
@@ -172,7 +168,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      #{id,jdbcType=INTEGER},
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
       </if>

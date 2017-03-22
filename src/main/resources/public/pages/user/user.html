@@ -1,8 +1,8 @@
-<div class="container" ng-controller="userController">
+<div class="container">
 	<div class="alert alert-danger" ng-hide="hideError">{{errorMsg}}</div>
 	<div class="form-signin" ng-show="step=='login'">
 		<h2 class="form-signin-heading">请登录</h2>
-		<input type="text" class="form-control" ng-model="user.name" placeholder="手机号/身份证号/邮箱" autofocus="autofocus">
+		<input type="text" class="form-control" ng-model="user.name" ng-change="checkMobile()" placeholder="手机号/身份证号/邮箱" autofocus="autofocus">
 		<input type="password" class="form-control" ng-model="user.password" placeholder="密码">
 		<span class="show-password" ng-touchstart="showPassword()" ng-touchend="hidePassword()"></span>
 		<div class="checkbox">
@@ -19,6 +19,8 @@
 		<input type="text" class="form-control" ng-model="user.name" placeholder="手机号/身份证号/邮箱" ng-change="checkMobile()" autofocus="autofocus">
 		<input type="password" class="form-control" ng-model="user.password" placeholder="密码">
 		<span class="show-password" ng-touchstart="showPassword()" ng-touchend="hidePassword()"></span>
+		<input type="text" class="form-control" ng-model="user.smsCode" placeholder="验证码/1234" ng-show="user.type=='mobile'">
+		<input type="text" class="form-control" ng-model="user.username" placeholder="真实姓名">
 		<button class="btn btn-lg btn-primary btn-block" type="button" ng-click="register()">注册</button>
 		<div class="btn btn-lg btn-block" ng-click="step='login'" >登录</div>
 	</div>

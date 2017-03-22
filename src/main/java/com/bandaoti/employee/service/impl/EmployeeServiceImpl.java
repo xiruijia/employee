@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.druid.util.StringUtils;
+import com.bandaoti.employee.ControllerException;
 import com.bandaoti.employee.ListUtil;
+import com.bandaoti.employee.ReturnCode;
 import com.bandaoti.employee.dao.EmployeeMapper;
 import com.bandaoti.employee.entity.Employee;
 import com.bandaoti.employee.entity.EmployeeExample;
@@ -17,7 +20,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public final List<Integer> empStatus=ListUtil.asList(1,2);
 	
 	@Override
-	public Employee addEmployee(Employee emp) {
+	public Employee addEmployee(Employee emp) throws ControllerException {
+		if((!StringUtils.isEmpty(emp.getCode())&&getEmployeeByCode(emp.getCode())!=null)
+				||(!StringUtils.isEmpty(emp.getEmail())&&getEmployeeByEmail(emp.getEmail())!=null)
+				||(!StringUtils.isEmpty(emp.getMobile())&&getEmployeeByMobile(emp.getMobile())!=null)
+				||(!StringUtils.isEmpty(emp.getIdcard())&&getEmployeeByIdcard(emp.getIdcard())!=null)
+				){
+			throw new ControllerException(ReturnCode.ACCOUNT_EXIST_ERROR);
+		}
+		emp.setStatus(1);
 		empMapper.insertSelective(emp);
 		return emp;
 	}

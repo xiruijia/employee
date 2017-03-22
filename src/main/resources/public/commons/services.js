@@ -3,19 +3,26 @@ bdtApp.service('UserService', function($rootScope, HttpService, $location,$q) {
 	var service = {};
 	service.getUser = function() {
 		var deferred = $q.defer();
-		if(user!=null){
-			deferred.resolve(user);
-		}else{
-			HttpService.post("/employee/getEmployee", {}).then(function(res) {
-				if (res.code == 0) {
-					user=res.data;
-					deferred.resolve(res.data);
-				} else {
-					// 跳转到登录页面
-					$location.path("/user");
+		HttpService.post("/employee/getEmployee", {}).then(function(res) {
+			if (res.code == 0) {
+				if(user.mobile!=null&&user.mobile!=''){
+					user.type+='mobile,';
 				}
-			});
-		}
+				if(user.email!=null&&user.email!=''){
+					user.type+='email,';
+				}
+				if(user.idcard!=null&&user.idcard!=''){
+					user.type+='idcard,';
+				}
+				if(user.code!=null&&user.code!=''){
+					user.type+='code,';
+				}
+				deferred.resolve(res.data);
+			} else {
+				// 跳转到登录页面
+				$location.path("/user/login");
+			}
+		});
 		return deferred.promise;
 	}
 	service.register=function(user){

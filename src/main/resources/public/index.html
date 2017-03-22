@@ -13,10 +13,12 @@
 </head>
 <body ng-app="bdt-app">
 	<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
-		<a href="#/user" class="bdt-navbar-toggler navbar-toggler-right"><span
-			class="icon-user"></span></a> <a class="navbar-brand" href="#/home">半导体郗</a>
+		<a href="#user/user" class="bdt-navbar-toggler navbar-toggler-right">
+			<span class="icon-user"></span>
+		</a>
+		<a ui-sref="home" class="navbar-brand">半导体郗</a>
 	</nav>
-	<div ng-view=""></div>
+	<div ui-view=""></div>
 	<footer class="footer">
 		<div class="container">
 			<span class="text-muted">Place sticky footer content here.</span>
@@ -25,7 +27,7 @@
 </body>
 <script src="./plugs/jquery-3.1.1.js"></script>
 <script src="./plugs/angular-1.6.3.js"></script>
-<script src="./plugs/angular-route-1.6.3.js"></script>
+<script src="./plugs/angular-ui-router-1.0.0-rc.1.js"></script>
 <script src="./plugs/tether-1.4.0.js"></script>
 <script src="./plugs/bootstrap-4.0.0-alpha.6.js"></script>
 

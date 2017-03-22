@@ -19,6 +19,16 @@ public class ControllerException extends Exception{
 		setMsg(type.getValue());
 		setData(data);
 	}
+	public ControllerException(ReturnCode type,Boolean replace,String data) {
+		super(type.getValue());
+		setCode(type.getKey());
+		if(replace!=null && replace){
+			setMsg(data);
+		}else{
+			setMsg(type.getValue());
+			setData(data);
+		}
+	}
 	
 	public ControllerException() {
 		super();

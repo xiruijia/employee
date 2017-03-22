@@ -1,5 +1,7 @@
 package com.bandaoti.employee.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +24,7 @@ import com.bandaoti.employee.MD5Util;
 import com.bandaoti.employee.ReturnCode;
 import com.bandaoti.employee.entity.Employee;
 import com.bandaoti.employee.service.EmployeeService;
+import com.bandaoti.employee.service.RoleService;
 import com.github.pagehelper.util.StringUtil;
 
 @RestController
@@ -31,19 +34,44 @@ public class EmployeeController extends BaseController {
 	private EmployeeService empService;
 	@Autowired
 	private StringRedisTemplate sRedis;
+	@Autowired
+	private RoleService roleService;
 
 	@PostMapping("getEmployee")
 	public ControllerResult getEmployee() throws ControllerException {
-		return success(getUser());
+		Map<String,Object> result=new HashMap<>();
+		result.put("user", getUser());
+		result.put("roles", roleService.getRoleByEmpId(getUser().getId()));
+		return success(result);
 	}
 	
 	@PostMapping("register")
-	public ControllerResult register() throws ControllerException{
+	public ControllerResult register(HttpServletResponse response) throws ControllerException{
 		String username=getParamNotNull("name");
 		String password=getParam("password");
+		String name=getParamNotNull("username");//真实姓名
 		String type=getParamNotNull("type");
-		
-		return success();
+		Employee emp=new Employee();
+		if("mobile".equalsIgnoreCase(type.trim())){
+			emp.setMobile(username);
+			if(!("1234".equals(getParamNotNull("smsCode")))){
+				return faile(ReturnCode.SMS_CODE_ERROR);
+			}
+		}else if("email".equalsIgnoreCase(type.trim())){
+			emp.setEmail(username);
+		}else if("idcard".equalsIgnoreCase(type.trim())){
+			emp.setIdcard(username);
+		}else if("code".equalsIgnoreCase(type.trim())){
+			emp.setCode(username);
+		}else{
+			return faile();
+		}
+		emp.setName(name);
+		emp.setPassword(password);
+		empService.addEmployee(emp);
+		getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, emp);
+		emp.setPassword(null);
+		return success(emp);
 	}
 
 	@PostMapping("login")
