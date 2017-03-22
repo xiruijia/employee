@@ -1,4 +1,4 @@
-bdtApp.controller('userController', function($scope,$stateParams, HttpService, UserService) {
+bdtApp.controller('userController', function($scope,$stateParams, HttpService, UserService,ModalService) {
 	$scope.step = $stateParams.type;
 	$scope.name = "";
 	$scope.password = "";
@@ -27,6 +27,7 @@ bdtApp.controller('userController', function($scope,$stateParams, HttpService, U
 			}
 		});
 	}
+	//检查注册类型
 	$scope.checkMobile = function() {
 		$scope.hideError = true;
 		$scope.user.type='';
@@ -64,6 +65,7 @@ bdtApp.controller('userController', function($scope,$stateParams, HttpService, U
 			}
 		});
 	}
+	//注销
 	$scope.logout=function(){
 		HttpService.get("/employee/logout").then(function(res){
 			if(res.code==0){
@@ -73,7 +75,19 @@ bdtApp.controller('userController', function($scope,$stateParams, HttpService, U
 			}
 		});
 	}
-	
+	//删除角色
+	$scope.delRole=function(role){
+		ModalService.yesno({content:'是否删除角色:'+role.name},
+			function(role){
+			HttpService.post("/employee/delRole",role).then(function(res) {
+				if (res.code == 0) {
+					debugger
+				} else {
+					debugger
+				}
+			});
+			})
+	}
 	$scope.showPassword=function(){
 		$('input[ng-model="user.password"]').attr("type","text");
 	}

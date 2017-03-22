@@ -42,6 +42,13 @@ public class BaseController {
 		if(!StringUtils.isEmpty(value))return value;
 		throw new ControllerException(ReturnCode.FAILE,true,key+"不能为空");
 	}
+	public Integer getParamNotInteger(String key) throws ControllerException{
+		try{
+			return Integer.parseInt(getParamNotNull(key));
+		}catch(NumberFormatException e){
+			throw new ControllerException(ReturnCode.NUMBER_FORMAT_ERROR);
+		}
+	}
 	public ControllerResult success(){
 		return new ControllerResult(ReturnCode.SUCCESS);
 	}

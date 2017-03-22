@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bandaoti.employee.ControllerException;
 import com.bandaoti.employee.ListUtil;
+import com.bandaoti.employee.ReturnCode;
 import com.bandaoti.employee.dao.EmpRoleMapper;
 import com.bandaoti.employee.dao.EmployeeMapper;
 import com.bandaoti.employee.dao.RoleMapper;
@@ -27,6 +29,28 @@ public class RoleServiceImpl implements RoleService {
 	@Autowired
 	private EmployeeMapper empMapper;
 
+	@Override
+	public void addRole(Role role) throws ControllerException {
+		RoleExample example=new RoleExample();
+		example.createCriteria().andStatusEqualTo(1).andCodeEqualTo(role.getCode());
+		if(roleMapper.selectByExample(example).size()>0){
+			throw new ControllerException(ReturnCode.ROLE_EXIST_ERROR);
+		}
+		roleMapper.insertSelective(role);
+	}
+	@Override
+	public void delRoleById(Integer roleId) {
+		roleMapper.deleteByPrimaryKey(roleId);
+	}
+	@Override
+	public void disableRoleById(Integer roleId, Integer status) throws ControllerException {
+		Role record=new Role();
+		record.setId(roleId);
+		record.setStatus(status);
+		if(roleMapper.updateByPrimaryKeySelective(record)==0){
+			throw new ControllerException(ReturnCode.ROLE_NOT_EXIST_ERROR);
+		}
+	}
 	@Override
 	public List<Role> getRoleByEmpId(Integer id) {
 		EmpRoleExample erExample = new EmpRoleExample();
@@ -54,5 +78,4 @@ public class RoleServiceImpl implements RoleService {
 		example.createCriteria().andIdIn(empids);
 		return empMapper.selectByExample(example);
 	}
-
 }

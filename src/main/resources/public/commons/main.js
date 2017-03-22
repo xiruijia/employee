@@ -1,5 +1,5 @@
 var bdtApp = angular.module("bdt-app", [
-    'ui.router'
+    'ui.router','ui.bootstrap'
 ]);
 bdtApp.value('config',{title:'半导体郗'});
 bdtApp.url="www.test.bandaotixi.cc";
