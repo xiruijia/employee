@@ -1,6 +1,8 @@
 package com.bandaoti.employee;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -13,6 +15,8 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
 import com.bandaoti.employee.entity.Employee;
+import com.bandaoti.employee.entity.Role;
+import com.bandaoti.employee.service.RoleService;
 import com.github.pagehelper.util.StringUtil;
 
 public class BaseController {
@@ -20,6 +24,8 @@ public class BaseController {
 	private HttpServletRequest request;
 	@Autowired
 	private StringRedisTemplate sRedis;
+	@Autowired
+	private RoleService roleService;
 
 	public Map<String, String> getParams() {
 		Map<String, String> params = new HashMap<>();
@@ -87,6 +93,23 @@ public class BaseController {
 			return user;
 		}
 		throw new ControllerException(ReturnCode.USER_NOT_LOGIN);
+	}
+	@SuppressWarnings("unchecked")
+	public List<Role> getRoles() throws ControllerException{
+		Employee emp=getUser();
+		List<Role> roles=(List<Role>) getSession().getAttribute(BandaotiConstant.SESSION_USER_ROLES);
+		if(roles==null){
+			roles=roleService.getRoleByEmpId(emp.getId());
+			getSession().setAttribute(BandaotiConstant.SESSION_USER_ROLES, roles);
+			List<String> rolesString=new ArrayList<>();
+			roles.forEach(role->{
+				rolesString.add(role.getCode());
+			});
+			getSession().setAttribute(BandaotiConstant.SESSION_USER_ROLES_STRING, rolesString);
+			return roles;
+		}else{
+			return roles;
+		}
 	}
 	public String getCookie(String name){
 		Cookie[] cookies=request.getCookies();

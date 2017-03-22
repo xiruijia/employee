@@ -22,9 +22,9 @@ import com.bandaoti.employee.ControllerException;
 import com.bandaoti.employee.ControllerResult;
 import com.bandaoti.employee.MD5Util;
 import com.bandaoti.employee.ReturnCode;
+import com.bandaoti.employee.annotations.EmpAuthority;
 import com.bandaoti.employee.entity.Employee;
 import com.bandaoti.employee.service.EmployeeService;
-import com.bandaoti.employee.service.RoleService;
 import com.github.pagehelper.util.StringUtil;
 
 @RestController
@@ -34,14 +34,12 @@ public class EmployeeController extends BaseController {
 	private EmployeeService empService;
 	@Autowired
 	private StringRedisTemplate sRedis;
-	@Autowired
-	private RoleService roleService;
-
+	@EmpAuthority({})
 	@PostMapping("getEmployee")
 	public ControllerResult getEmployee() throws ControllerException {
 		Map<String,Object> result=new HashMap<>();
 		result.put("user", getUser());
-		result.put("roles", roleService.getRoleByEmpId(getUser().getId()));
+		result.put("roles", getRoles());
 		return success(result);
 	}
 	
@@ -73,7 +71,6 @@ public class EmployeeController extends BaseController {
 		emp.setPassword(null);
 		return success(emp);
 	}
-
 	@PostMapping("login")
 	public ControllerResult login(HttpServletResponse response) throws ControllerException {
 		String username = getParamNotNull("name");
@@ -95,11 +92,15 @@ public class EmployeeController extends BaseController {
 			cookie.setMaxAge(604800);// 秒：60*60*24*7//记住7天
 			cookie.setPath("/");
 			response.addCookie(cookie);
+			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, emp);
 			// 记住我
 		} else {
 			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, emp);
 		}
-		return success(emp);
+		Map<String,Object> result=new HashMap<>();
+		result.put("user", emp);
+		result.put("roles",getRoles());
+		return success(result);
 	}
 	@GetMapping("logout")
 	public ControllerResult logout(){
