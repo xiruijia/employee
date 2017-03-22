@@ -1,10 +1,11 @@
 package com.bandaoti.employee.service;
 
+import com.bandaoti.employee.ControllerException;
 import com.bandaoti.employee.EmployeeType;
 import com.bandaoti.employee.entity.Employee;
 
 public interface EmployeeService {
-	Employee addEmployee(Employee emp);
+	Employee addEmployee(Employee emp) throws ControllerException;
 	
 	Boolean delEmployeeByMobile(String mobile);
 	Boolean delEmployeeByIdcard(String idCard);

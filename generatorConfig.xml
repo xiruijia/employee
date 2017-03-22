@@ -14,8 +14,8 @@ java -jar mybatis-generator-core-1.3.6.jar -configfile generatorConfig.xml -over
  		<javaModelGenerator targetPackage="com.bandaoti.employee.entity" targetProject="src/main/java" />
  		<sqlMapGenerator targetPackage="com.bandaoti.employee.mapper" targetProject="src/main/java" />
  		<javaClientGenerator targetPackage="com.bandaoti.employee.dao" targetProject="src/main/java" type="XMLMAPPER" />
- 		<table tableName="employee" domainObjectName="Employee"><generatedKey column="id" sqlStatement="MYSQL"/></table>
- 		<table tableName="role" domainObjectName="Role"><generatedKey column="id" sqlStatement="MYSQL"/></table>
- 		<table tableName="emp_role" domainObjectName="EmpRole"><generatedKey column="id" sqlStatement="MYSQL"/></table>
+ 		<table tableName="employee" domainObjectName="Employee"></table>
+ 		<table tableName="role" domainObjectName="Role"></table>
+ 		<table tableName="emp_role" domainObjectName="EmpRole"></table>
  	</context>
 </generatorConfiguration>

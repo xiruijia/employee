@@ -6,11 +6,7 @@ bdtApp.directive("runoobDirective", function() {
 .directive("ngTouchstart", function () {
     return {
         controller: ["$scope", "$element", function ($scope, $element) {
-            $element.bind("touchstart", function (event) {
-                var method = $element.attr("ng-touchstart");
-                $scope.$apply(method);
-            });
-        	$element.bind("mousedown", function (event) {
+            $element.bind("touchstart mousedown", function (event) {
                 var method = $element.attr("ng-touchstart");
                 $scope.$apply(method);
             });
@@ -42,8 +38,7 @@ bdtApp.directive("runoobDirective", function() {
 .directive("ngTouchend", function () {
     return {
         controller: ["$scope", "$element", function ($scope, $element) {
-            $element.bind("touchend",ngTouchend );
-            $element.bind("mouseup", ngTouchend);
+            $element.bind("touchend mouseup",ngTouchend );
             function ngTouchend (event) {
                 var method = $element.attr("ng-touchend");
                 $scope.$apply(method);
