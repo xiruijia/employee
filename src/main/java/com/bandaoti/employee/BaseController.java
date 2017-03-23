@@ -1,8 +1,6 @@
 package com.bandaoti.employee;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.Cookie;
@@ -14,9 +12,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.bandaoti.employee.entity.Employee;
-import com.bandaoti.employee.entity.Role;
-import com.bandaoti.employee.service.RoleService;
+import com.bandaoti.employee.vo.EmployeeVO;
 import com.github.pagehelper.util.StringUtil;
 
 public class BaseController {
@@ -24,8 +20,6 @@ public class BaseController {
 	private HttpServletRequest request;
 	@Autowired
 	private StringRedisTemplate sRedis;
-	@Autowired
-	private RoleService roleService;
 
 	public Map<String, String> getParams() {
 		Map<String, String> params = new HashMap<>();
@@ -76,14 +70,14 @@ public class BaseController {
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
 	}
-	public Employee getUser() throws ControllerException{
-		Employee user=(Employee) getSession().getAttribute(BandaotiConstant.LOGIN_REMEMBER_ME);
+	public EmployeeVO getUser() throws ControllerException{
+		EmployeeVO user=(EmployeeVO) getSession().getAttribute(BandaotiConstant.LOGIN_REMEMBER_ME);
 		if(user==null){
 			String redisKey=getCookie(BandaotiConstant.LOGIN_REMEMBER_ME);
 			if(!StringUtil.isEmpty(redisKey)){
-				String userJson=sRedis.opsForValue().get(redisKey);
+				String userJson=getsRedis().opsForValue().get(redisKey);
 				if(!StringUtil.isEmpty(userJson)){
-					user= JSON.parseObject(userJson, Employee.class);
+					user= JSON.parseObject(userJson, EmployeeVO.class);
 					getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, user);
 					return user;
 				}
@@ -93,23 +87,6 @@ public class BaseController {
 			return user;
 		}
 		throw new ControllerException(ReturnCode.USER_NOT_LOGIN);
-	}
-	@SuppressWarnings("unchecked")
-	public List<Role> getRoles() throws ControllerException{
-		Employee emp=getUser();
-		List<Role> roles=(List<Role>) getSession().getAttribute(BandaotiConstant.SESSION_USER_ROLES);
-		if(roles==null){
-			roles=roleService.getRoleByEmpId(emp.getId());
-			getSession().setAttribute(BandaotiConstant.SESSION_USER_ROLES, roles);
-			List<String> rolesString=new ArrayList<>();
-			roles.forEach(role->{
-				rolesString.add(role.getCode());
-			});
-			getSession().setAttribute(BandaotiConstant.SESSION_USER_ROLES_STRING, rolesString);
-			return roles;
-		}else{
-			return roles;
-		}
 	}
 	public String getCookie(String name){
 		Cookie[] cookies=request.getCookies();
@@ -121,6 +98,10 @@ public class BaseController {
 			}
 		}
 		return null;
+	}
+	public StringRedisTemplate getsRedis() {
+		if(sRedis==null)sRedis=Application.application.getBean(StringRedisTemplate.class);
+		return sRedis;
 	}
 	
 }

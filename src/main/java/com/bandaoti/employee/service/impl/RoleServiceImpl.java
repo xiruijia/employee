@@ -1,13 +1,13 @@
 package com.bandaoti.employee.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bandaoti.employee.ControllerException;
-import com.bandaoti.employee.ListUtil;
 import com.bandaoti.employee.ReturnCode;
 import com.bandaoti.employee.dao.EmpRoleMapper;
 import com.bandaoti.employee.dao.EmployeeMapper;
@@ -21,7 +21,7 @@ import com.bandaoti.employee.service.RoleService;
 
 @Service
 public class RoleServiceImpl implements RoleService {
-	public final List<Integer> roleStatus=ListUtil.asList(1);
+	public final List<Integer> roleStatus=Arrays.asList(1);
 	@Autowired
 	private EmpRoleMapper empRoleMapper;
 	@Autowired
@@ -59,7 +59,7 @@ public class RoleServiceImpl implements RoleService {
 		empRoleMapper.selectByExample(erExample).forEach(a -> {
 			roleids.add(a.getRoleId());
 		});
-		if(roleids.isEmpty())return null;
+		if(roleids.isEmpty())return new ArrayList<>();
 		RoleExample roleExample = new RoleExample();
 		roleExample.createCriteria().andStatusIn(roleStatus).andIdIn(roleids);
 		return roleMapper.selectByExample(roleExample);

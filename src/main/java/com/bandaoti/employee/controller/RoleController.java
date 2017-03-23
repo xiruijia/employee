@@ -1,7 +1,7 @@
 package com.bandaoti.employee.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +21,7 @@ public class RoleController extends BaseController {
 	 * @return
 	 * @throws ControllerException 
 	 */
-	@PostMapping("addRole")
+	@GetMapping("addRole")
 	public ControllerResult addRole() throws ControllerException{
 		Role role=new Role();
 		role.setCode(getParamNotNull("code"));
@@ -35,7 +35,7 @@ public class RoleController extends BaseController {
 	 * @return
 	 * @throws ControllerException 
 	 */
-	@PostMapping("delRole")
+	@GetMapping("delRole")
 	public ControllerResult delRole() throws ControllerException{
 		Integer roleId=getParamNotInteger("roleId");
 		roleService.delRoleById(roleId);
@@ -46,7 +46,7 @@ public class RoleController extends BaseController {
 	 * @return
 	 * @throws ControllerException
 	 */
-	@PostMapping("disableRole")
+	@GetMapping("disableRole")
 	public ControllerResult disableRole() throws ControllerException{
 		Integer roleId=getParamNotInteger("roleId");
 		roleService.disableRoleById(roleId,0);
@@ -56,7 +56,7 @@ public class RoleController extends BaseController {
 	 * 给员工添加角色
 	 * @return
 	 */
-	@PostMapping("addRoleToEmp")
+	@GetMapping("addRoleToEmp")
 	public ControllerResult addRoleToEmp(){
 		return success();
 	}
@@ -64,7 +64,7 @@ public class RoleController extends BaseController {
 	 * 删除员工角色
 	 * @return
 	 */
-	@PostMapping("delRoleFormEmp")
+	@GetMapping("delRoleFormEmp")
 	public ControllerResult delRoleFormEmp(){
 		return success();
 	}

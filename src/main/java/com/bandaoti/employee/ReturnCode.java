@@ -8,6 +8,10 @@ public enum ReturnCode {
 	ACCOUNT_PASSWORD_ERROR(4, "帐号或密码错误"),
 	
 	ACCOUNT_EXIST_ERROR(100,"帐号已存在"),
+	ACCOUNT_GENDER_EXIST(101,"性别已设置"),
+	ACCOUNT_MOBILE_EXIST(102,"手机已绑定"),
+	ACCOUNT_EMAIL_EXIST(103,"邮箱已绑定"),
+	ACCOUNT_IDCARD_EXIST(104,"身份已绑定"),
 	
 	SMS_CODE_ERROR(200,"短信验证码错误"),
 	

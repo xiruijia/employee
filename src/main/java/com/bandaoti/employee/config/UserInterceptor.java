@@ -1,5 +1,6 @@
 package com.bandaoti.employee.config;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,11 +9,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.bandaoti.employee.BandaotiConstant;
 import com.bandaoti.employee.BaseController;
 import com.bandaoti.employee.ControllerException;
 import com.bandaoti.employee.ReturnCode;
 import com.bandaoti.employee.annotations.EmpAuthority;
+import com.bandaoti.employee.entity.Role;
 
 public class UserInterceptor extends BaseController implements HandlerInterceptor {
 	@Override
@@ -23,10 +24,10 @@ public class UserInterceptor extends BaseController implements HandlerIntercepto
 			EmpAuthority ea=method.getMethodAnnotation(EmpAuthority.class);
 			if(ea!=null){
 				//有标记，就标识需要有权限
-				@SuppressWarnings("unchecked")
-				List<String> roles=(List<String>) getSession().getAttribute(BandaotiConstant.SESSION_USER_ROLES_STRING);
-				if(roles==null||roles.isEmpty()){
-					throw new ControllerException(ReturnCode.EMP_ROLE_NOT_FOUND);
+				List<String> roles=new ArrayList<>();
+				List<Role> roless=getUser().getRoles();
+				if(roless!=null){
+					roless.forEach(a->roles.add(a.getCode()));
 				}
 				boolean tag=ea.value().length==0;
 				for(String role:ea.value()){

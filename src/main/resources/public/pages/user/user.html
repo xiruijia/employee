@@ -2,56 +2,103 @@
 	<div class="alert alert-danger" ng-hide="hideError">{{errorMsg}}</div>
 	<div class="form-signin" ng-show="step=='login'">
 		<h2 class="form-signin-heading">请登录</h2>
-		<input type="text" class="form-control" ng-model="user.name" ng-change="checkMobile()" placeholder="手机号/身份证号/邮箱" autofocus="autofocus">
+		<input type="text" class="form-control" ng-model="user.name" ng-change="checkMobile()"
+			placeholder="手机号/身份证号/邮箱" autofocus="autofocus">
 		<div class="pwd_box">
 			<input type="password" class="form-control" ng-model="user.password" placeholder="密码">
 			<button class="show-password btn" ng-touchstart="showPassword()" ng-touchend="hidePassword()"></button>
 		</div>
-		
+
 		<div class="checkbox">
-			<label>
-				<input type="checkbox" value="true" name="rememberMe" checked="checked" ng-model="user.rememberMe" />记住我
+			<label> <input type="checkbox" value="true" name="rememberMe" checked="checked"
+				ng-model="user.rememberMe" />记住我
 			</label>
 		</div>
 		<button class="btn btn-lg btn-primary btn-block" type="button" ng-click="login()">登录</button>
-		<div class="btn btn-lg btn-block" ng-click="step='regist'" >注册</div>
+		<div class="btn btn-lg btn-block" ng-click="step='regist'">注册</div>
 	</div>
-	
+
 	<div class="form-signin" ng-show="step=='regist'">
 		<h2 class="form-signin-heading">注册</h2>
-		<input type="text" class="form-control" ng-model="user.name" placeholder="手机号/身份证号/邮箱" ng-change="checkMobile()" autofocus="autofocus">
-		<input type="password" class="form-control" ng-model="user.password" placeholder="密码">
-		<span class="show-password" ng-touchstart="showPassword()" ng-touchend="hidePassword()"></span>
-		<input type="text" class="form-control" ng-model="user.smsCode" placeholder="验证码/1234" ng-show="user.type=='mobile'">
-		<input type="text" class="form-control" ng-model="user.username" placeholder="真实姓名">
+		<input type="text" class="form-control" ng-model="user.name" placeholder="手机号/身份证号/邮箱"
+			ng-change="checkMobile()" autofocus="autofocus"> <input type="password" class="form-control"
+			ng-model="user.password" placeholder="密码"> <span class="show-password"
+			ng-touchstart="showPassword()" ng-touchend="hidePassword()"></span> <input type="text" class="form-control"
+			ng-model="user.smsCode" placeholder="验证码/1234" ng-show="user.type=='mobile'"> <input type="text"
+			class="form-control" ng-model="user.username" placeholder="真实姓名">
 		<button class="btn btn-lg btn-primary btn-block" type="button" ng-click="register()">注册</button>
-		<div class="btn btn-lg btn-block" ng-click="step='login'" >登录</div>
+		<div class="btn btn-lg btn-block" ng-click="step='login'">登录</div>
 	</div>
-	
-	<div class="form-signin" ng-show="step=='user'">
-		<h2 class="form-signin-heading">用户信息</h2>
-		<label>帐号:</label><div>{{user.name}}</div>
-		<label>性别:</label><div>{{user.gender}}</div>
-		<label>代码:</label><div>{{user.code}}</div>
-		<label>身份证号:</label><div>{{user.idcard}}</div>
-		<label>手机号:</label><div>{{user.mobile}}</div>
-		<label>邮箱:</label><div>{{user.email}}</div>
-		<div class="table-responsive">
+	<form class="form-horizontal" role="form" ng-show="step=='user'">
+		<div class="form-group">
+			<label class="col-sm-2 control-label">帐号</label>
+			<div class="col-sm-10">
+				<input ng-disabled="user.code!=null" ng-blur="check('code',user.code,$event)" type="text"
+					class="form-control" ng-model="user.code">
+				<div ng-hide="code!=null" class="input-btn" ng-click="changeEmployee('code',user.code,'保存后不能改变哦',$event)">保存</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="disabledTextInput" class="col-sm-2 control-label">姓名</label>
+			<div class="col-sm-10">
+				<input ng-disabled="true" type="text" id="disabledTextInput" class="form-control" ng-model="user.name">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-2 control-label">性别</label>
+			<div class="col-sm-8">
+				<select ng-disabled="user.gender!=0" class="form-control" ng-model="user.gender"
+					ng-options="x for (x, y) in {'未知':0,'男':1,'女':2}"
+					ng-change="changeEmployee('gender',user.gender,'只能修改一次性别')">
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="disabledTextInput" class="col-sm-2 control-label">身份证</label>
+			<div class="col-sm-10">
+				<input ng-disabled="idcard!=null" ng-blur="check('idcard',user.idcard,$event)" type="text"
+					class="form-control" ng-model="user.idcard">
+				<div ng-hide="idcard!=null" class="input-btn" ng-click="changeEmployee('idcard',user.idcard,'只能修改一次身份证',$event)">保存</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="disabledTextInput" class="col-sm-2 control-label">手机</label>
+			<div class="col-sm-10">
+				<input ng-disabled="mobile!=null" ng-blur="check('mobile',user.mobile,$event)" type="text"
+					class="form-control" ng-model="user.mobile">
+				<div ng-hide="mobile!=null" class="input-btn" ng-click="changeEmployee('mobile',user.mobile,'只能绑定一次手机号',$event)">绑定</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="disabledTextInput" class="col-sm-2 control-label">邮箱</label>
+			<div class="col-sm-10">
+				<input ng-disabled="email!=null" ng-blur="check('email',user.email,$event)" type="text"
+					class="form-control" ng-model="user.email">
+				<div ng-hide="email!=null" class="input-btn" ng-click="changeEmployee('email',user.email,'只能绑定一次邮箱',$event)">绑定</div>
+			</div>
+		</div>
+
+		<div class="table-responsive" ng-show="roles.length>0">
 			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th>序号</th><th>代码</th><th>名称</th><th>操作</th>
+						<th>序号</th>
+						<th>代码</th>
+						<th>名称</th>
+						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr ng-repeat="role in roles">
-						<td>{{$index+1}}</td><td>{{role.code}}</td><td>{{role.name}}</td>
+						<td>{{$index+1}}</td>
+						<td>{{role.code}}</td>
+						<td>{{role.name}}</td>
 						<td><button class="btn" ng-click="delRole(role)" ng-disabled="role.code=='admin'">删除</button></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
 		<button class="btn btn-lg btn-primary btn-block" ng-click="logout()">注销</button>
-	</div>
+	</form>
 
 </div>

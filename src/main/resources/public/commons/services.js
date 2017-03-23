@@ -8,21 +8,21 @@ bdtApp.service(
 				HttpService.post("/employee/getEmployee", {}).then(
 						function(res) {
 							if (res.code == 0) {
-								if (res.data.user.mobile != null
-										&& res.data.user.mobile != '') {
-									res.data.user.type += 'mobile,';
+								if (res.data.mobile != null
+										&& res.data.mobile != '') {
+									res.data.type += 'mobile,';
 								}
-								if (res.data.user.email != null
-										&& res.data.user.email != '') {
-									res.data.user.type += 'email,';
+								if (res.data.email != null
+										&& res.data.email != '') {
+									res.data.type += 'email,';
 								}
-								if (res.data.user.idcard != null
-										&& res.data.user.idcard != '') {
-									res.data.user.type += 'idcard,';
+								if (res.data.idcard != null
+										&& res.data.idcard != '') {
+									res.data.type += 'idcard,';
 								}
-								if (res.data.user.code != null
-										&& res.data.user.code != '') {
-									res.data.user.type += 'code,';
+								if (res.data.code != null
+										&& res.data.code != '') {
+									res.data.type += 'code,';
 								}
 								deferred.resolve(res.data);
 							} else {
@@ -70,11 +70,10 @@ bdtApp.service(
 
 	service.post = function(url, params) {
 		var deferred = $q.defer(); // 声明延后执行，表示要去监控后面的执行
-		var a = $http({
-			method : 'POST',
-			url : bdtApp.postUrl + url,
+		var a = $http.jsonp(bdtApp.postUrl + url,{
 			params : params
-		}).then(function(res) {
+		});
+		a.then(function(res) {
 			if (res.status == 200) {
 				deferred.resolve(res.data);
 			} else {
@@ -88,6 +87,27 @@ bdtApp.service(
 	return service;
 }).service('ModalService', function($rootScope, $uibModal, $uibTooltip) {
 	var service = {};
+	service.toastr={};
+	service.toastr.success=function(message,title,titme){
+		titme=titme || 1000;
+		title=title || '提示';
+		toastr.success(message,title,{timeOut:titme});
+	}
+	service.toastr.info=function(message,title,titme){
+		titme=titme || 1000;
+		title=title || '提示';
+		toastr.info(message,title,{timeOut:titme});
+	}
+	service.toastr.warning=function(message,title,titme){
+		titme=titme || 1000;
+		title=title || '提示';
+		toastr.warning(message,title,{timeOut:titme});
+	}
+	service.toastr.error=function(message,title,titme){
+		titme=titme || 1000;
+		title=title || '提示';
+		toastr.error(message,title,{timeOut:titme});
+	}
 	service.yesno = function(params,okCall,cancelCall) {
 		var modalInstance = $uibModal.open({
 			templateUrl : '../template/yesno.html',

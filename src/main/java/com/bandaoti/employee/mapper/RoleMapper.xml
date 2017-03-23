@@ -99,17 +99,20 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.bandaoti.employee.entity.Role">
-    insert into role (id, status, name, 
-      code)
-    values (#{id,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
-      #{code,jdbcType=VARCHAR})
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into role (status, name, code
+      )
+    values (#{status,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.bandaoti.employee.entity.Role">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into role
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="status != null">
         status,
       </if>
@@ -121,9 +124,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
       </if>

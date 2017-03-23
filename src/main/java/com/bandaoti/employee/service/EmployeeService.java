@@ -27,6 +27,7 @@ public interface EmployeeService {
 	Employee getEmployeeByIdcard(String idCard);
 	Employee getEmployeeByEmail(String email);
 	Employee getEmployeeByCode(String code);
+	Employee getEmployee(Integer id);
 	default Employee getEmployee(String mobileOrIdcardOrEmail){
 		Employee emp=getEmployeeByIdcard(mobileOrIdcardOrEmail);
 		if(emp==null){
