@@ -20,15 +20,10 @@
 		</table>
 		<footer class="panel-footer">
 			<div class="row">
-				<div class="col-xs-3">
-					<select class="input-sm form-control w-sm inline v-middle" ng-model="placement.selected"
-						ng-options="o as o for o in placement.options" ng-change="placement.changeFn()">
-					</select>
-				</div>
-				<div class="col-sm-9 text-right text-center-xs">
+				<div class="col-xs-12 text-right text-center-xs">
 					<div class="pagination pagination-sm m-t-none m-b-none">
 						<ul uib-pagination boundary-links="true" total-items="totalItems" ng-model="currentPage"
-							class="pagination-sm" max-size="maxSize" previous-text="&lsaquo;" next-text="&rsaquo;"
+							class="pagination-sm" max-size="5" previous-text="&lsaquo;" next-text="&rsaquo;"
 							first-text="&laquo;" last-text="&raquo;"></ul>
 					</div>
 				</div>

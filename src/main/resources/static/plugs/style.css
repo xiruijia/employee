@@ -13,10 +13,10 @@
 .icon-user {
 	font-size: 30px;
 	color: white;
-	right: 10px; top : 10px; position : fixed;
+	right: 10px; 
 	text-decoration: none;
 	top: 10px;
-	position: fixed;
+	position: absolute;
 }
 
 .footer {
@@ -63,6 +63,7 @@
 
 .pagination {
     margin: 0px 0;
+	display: block;
 }
 .panel-footer {
     padding: 0px 15px;
