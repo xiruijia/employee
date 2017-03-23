@@ -1,5 +1,8 @@
 package com.bandaoti.employee.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,12 +13,30 @@ import com.bandaoti.employee.ControllerException;
 import com.bandaoti.employee.ControllerResult;
 import com.bandaoti.employee.entity.Role;
 import com.bandaoti.employee.service.RoleService;
+import com.bandaoti.employee.vo.EmployeeVO;
+import com.github.pagehelper.PageInfo;
 
 @RestController
 @RequestMapping("role")
 public class RoleController extends BaseController {
 	@Autowired
 	private RoleService roleService;
+	/**
+	 * 查询所有角色
+	 * @return
+	 */
+	@GetMapping("findRole")
+	public ControllerResult findRole(String roleName,Integer pageNum){
+		if(pageNum==null||pageNum<1)pageNum=1;
+		PageInfo<Role> roles=roleService.getRoles(roleName,pageNum);
+		Map<String,Object> result=new HashMap<>();
+		result.put("roles", roles);
+		EmployeeVO empVo=getUserNotError();
+		if(empVo!=null){
+			result.put("myRoles", roleService.getRoleByEmpId(getUserNotError().getId()));
+		}
+		return success(roles);
+	}
 	/**
 	 * 新增角色
 	 * @return

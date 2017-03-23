@@ -60,3 +60,13 @@
 .modal-backdrop {
 	opacity: 0.5;
 }
+
+.pagination {
+    margin: 0px 0;
+}
+.panel-footer {
+    padding: 0px 15px;
+}
+.navbar {
+    margin-bottom: 0px;
+}

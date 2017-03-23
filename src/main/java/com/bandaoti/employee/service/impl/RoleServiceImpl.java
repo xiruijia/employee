@@ -18,6 +18,8 @@ import com.bandaoti.employee.entity.EmployeeExample;
 import com.bandaoti.employee.entity.Role;
 import com.bandaoti.employee.entity.RoleExample;
 import com.bandaoti.employee.service.RoleService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -77,5 +79,15 @@ public class RoleServiceImpl implements RoleService {
 		EmployeeExample example=new EmployeeExample();
 		example.createCriteria().andIdIn(empids);
 		return empMapper.selectByExample(example);
+	}
+	@Override
+	public PageInfo<Role> getRoles(String roleName, Integer pageNum) {
+		PageHelper.startPage(pageNum, 5);
+		RoleExample example=new RoleExample();
+		RoleExample.Criteria criteria=example.createCriteria().andStatusIn(roleStatus);
+		if(roleName!=null){
+			criteria.andNameLike(roleName+"%");
+		}
+		return new PageInfo<Role>(roleMapper.selectByExample(example));
 	}
 }

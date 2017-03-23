@@ -40,10 +40,8 @@ public class EmployeeController extends BaseController {
 	@GetMapping(value="getEmployee")
 	public ControllerResult getEmployee() throws ControllerException {
 		EmployeeVO empVo=getUser();
-		if(empVo.getRoles()==null){
-			empVo.setRoles(roleService.getRoleByEmpId(empVo.getId()));
-			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
-		}
+		empVo.setRoles(roleService.getRoleByEmpId(empVo.getId()));
+		getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
 		return success(empVo);
 	}
 	@EmpAuthority

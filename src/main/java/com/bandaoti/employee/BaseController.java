@@ -70,6 +70,13 @@ public class BaseController {
 	public void setRequest(HttpServletRequest request) {
 		this.request = request;
 	}
+	public EmployeeVO getUserNotError(){
+		try {
+			return getUser();
+		} catch (ControllerException e) {
+		}
+		return null;
+	}
 	public EmployeeVO getUser() throws ControllerException{
 		EmployeeVO user=(EmployeeVO) getSession().getAttribute(BandaotiConstant.LOGIN_REMEMBER_ME);
 		if(user==null){
