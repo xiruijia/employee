@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bandaoti.employee.BaseController;
 import com.bandaoti.employee.ControllerException;
 import com.bandaoti.employee.ControllerResult;
+import com.bandaoti.employee.annotations.EmpAuthority;
 import com.bandaoti.employee.entity.Role;
 import com.bandaoti.employee.service.RoleService;
 import com.bandaoti.employee.vo.EmployeeVO;
@@ -26,16 +27,17 @@ public class RoleController extends BaseController {
 	 * @return
 	 */
 	@GetMapping("findRole")
-	public ControllerResult findRole(String roleName,Integer pageNum){
+	public ControllerResult findRole(String roleName,Integer pageNum,Integer pageSize){
 		if(pageNum==null||pageNum<1)pageNum=1;
-		PageInfo<Role> roles=roleService.getRoles(roleName,pageNum);
+		if(pageSize==null||pageSize<1)pageSize=10;
+		PageInfo<Role> roles=roleService.getRoles(roleName,pageNum,pageSize);
 		Map<String,Object> result=new HashMap<>();
 		result.put("roles", roles);
 		EmployeeVO empVo=getUserNotError();
 		if(empVo!=null){
-			result.put("myRoles", roleService.getRoleByEmpId(getUserNotError().getId()));
+			result.put("myRoles", roleService.getRoleByEmpId(empVo.getId()));
 		}
-		return success(roles);
+		return success(result);
 	}
 	/**
 	 * 新增角色
@@ -77,16 +79,34 @@ public class RoleController extends BaseController {
 	 * 给员工添加角色
 	 * @return
 	 */
+	@EmpAuthority("admin")
 	@GetMapping("addRoleToEmp")
 	public ControllerResult addRoleToEmp(){
 		return success();
 	}
 	/**
+	 * 申请权限
+	 * @return
+	 * @throws ControllerException 
+	 */
+	@EmpAuthority
+	@GetMapping("reqRole")
+	public ControllerResult reqRole() throws ControllerException{
+		Integer roleId=getParamNotInteger("roleId");
+		Integer empId=getParamNotInteger("empId");
+		roleService.reqRole(getUser().getId(),empId,roleId);
+		return success();
+	}
+	/**
 	 * 删除员工角色
 	 * @return
+	 * @throws ControllerException 
 	 */
+	@EmpAuthority
 	@GetMapping("delRoleFormEmp")
-	public ControllerResult delRoleFormEmp(){
+	public ControllerResult delRoleFormEmp() throws ControllerException{
+		Integer roleId=getParamNotInteger("id");
+		roleService.delRoleByFormEmp(roleId);
 		return success();
 	}
 }

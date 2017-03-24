@@ -16,8 +16,9 @@ public enum ReturnCode {
 	SMS_CODE_ERROR(200,"短信验证码错误"),
 	
 	ROLE_EXIST_ERROR(300,"角色已存在"),
-	ROLE_NOT_EXIST_ERROR(301,"角色已存在"),
+	ROLE_NOT_EXIST_ERROR(301,"角色不存在"),
 	EMP_ROLE_NOT_FOUND(302,"当前员工没有访问权限"),
+	ROLE_REQUESTING_ERROR(303,"当前角色正在申请中"),
 	
 	NUMBER_FORMAT_ERROR(400,"数字转换错误"),
 	;

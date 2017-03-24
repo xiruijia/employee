@@ -14,10 +14,43 @@ bdtApp.controller('userController',function($scope, $stateParams, HttpService, U
 			$scope.idcard = res.idcard;
 			$scope.email = res.email;
 			$scope.roles = res.roles;
-			$scope.step = 'user';
+			$scope.step =$scope.step || 'userInfo';
 		});
 	}
-	$scope.initUser();
+	$scope.queryMessage=function(){
+		HttpService.post("/reqrole/getRequestRole",{pageNum:1}).then(
+				function(res) {
+					if (res.code == 0) {
+						var datas=res.data.list;
+						for(var i=0;i<datas.length;i++){
+							$scope.messages.push(datas[i]);
+						}
+					} else {
+						$scope.hideError = false;
+						$scope.errorMsg = res.msg;
+					}
+				});
+	}
+	if($scope.step=='message'){
+		$scope.messages=[];
+		$scope.queryMessage();
+	}
+	if($scope.step=='userInfo' || $scope.step=='role' || $scope.step=='user'){
+		$scope.initUser();
+	}
+	//同意授权
+	$scope.agree=function(msg,isAgree){
+		HttpService.post("/reqrole/agreeRole",{msgId:msg.id,agree:isAgree}).then(
+				function(res) {
+					if (res.code == 0) {
+						$scope.messages=[];
+						$scope.queryMessage();
+					} else {
+						$scope.hideError = false;
+						$scope.errorMsg = res.msg;
+					}
+				});
+	}
 	// 登录
 	$scope.login = function() {
 		$scope.hideError = true;
@@ -122,8 +155,7 @@ bdtApp.controller('userController',function($scope, $stateParams, HttpService, U
 			$scope.user.type = 'code';
 		} else {
 			// 错误
-			$scope.hideError = false;
-			$scope.errorMsg = "格式错误";
+			ModalService.toastr.error("格式错误");
 		}
 	}
 	// 注册
@@ -156,13 +188,14 @@ bdtApp.controller('userController',function($scope, $stateParams, HttpService, U
 	$scope.delRole = function(role) {
 		ModalService.yesno({
 			content : '是否删除角色:' + role.name
-		}, function(role) {
-			HttpService.post("/employee/delRole", role).then(
+		}, function(conf) {
+			HttpService.post("/role/delRoleFormEmp", role).then(
 					function(res) {
 						if (res.code == 0) {
-							debugger
+							ModalService.toastr.success("删除成功");
+							$scope.initUser();
 						} else {
-							debugger
+							ModalService.toastr.error("操作失败");
 						}
 					});
 		})

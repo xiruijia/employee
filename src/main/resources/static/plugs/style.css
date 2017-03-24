@@ -13,13 +13,19 @@
 .icon-user {
 	font-size: 30px;
 	color: white;
-	right: 10px; 
+	right: 10px;
 	text-decoration: none;
 	top: 10px;
 	position: absolute;
 }
 
+.icon-user:hover {
+	color: white;
+	text-decoration: none
+}
+
 .footer {
+	position: relative;
 	bottom: 0;
 	width: 100%;
 	height: 60px;
@@ -34,23 +40,27 @@
 	top: -200px;
 	left: 200px;
 }
-.pwd_box{
-	position:relative;
+
+.pwd_box {
+	position: relative;
 }
+
 .show-password {
 	position: absolute;
-	background: rgba(255, 255, 255, 0) url(/img/eye.png) no-repeat center center;
+	background: rgba(255, 255, 255, 0) url(/img/eye.png) no-repeat center
+		center;
 	background-size: 22px 13px;
 	cursor: pointer;
-	right:10px;
-	top:11px;
+	right: 10px;
+	top: 11px;
 }
-.input-btn{
+
+.input-btn {
 	position: absolute;
 	cursor: pointer;
-	right:30px;
-	top:8px;
-	color:blue;
+	right: 30px;
+	top: 8px;
+	color: blue;
 }
 
 .fade {
@@ -62,12 +72,54 @@
 }
 
 .pagination {
-    margin: 0px 0;
+	margin: 0px 0;
 	display: block;
 }
+
 .panel-footer {
-    padding: 0px 15px;
+	padding: 0px 15px;
 }
+
 .navbar {
-    margin-bottom: 0px;
+	margin-bottom: 0px;
+}
+
+.pager {
+	margin: 0px 0;
+}
+
+.user-table {
+	padding-top: 6px;
+}
+
+.user-table .user-box {
+	border-spacing: 1px;
+	margin-top: 6px;
+	border-color: #cecece;
+	height: 50px;
+	position: relative;
+	border-style: none none solid none;
+}
+
+.user-table .height-center {
+	padding: 15px 15px;
+	position: relative;
+}
+
+.user-table .right-arrows {
+	position: absolute;
+	right: 30px;
+	top: 18px;
+}
+.agreement-btn{
+    border: solid;
+    border-color: #c9c7c7;
+    border-width: 0.3px;
+    padding: 5px;
+}
+.agreement-btn:HOVER{
+    border: solid;
+    border-color: gray;
+    border-width: 0.3px;
+    padding: 4px;
 }

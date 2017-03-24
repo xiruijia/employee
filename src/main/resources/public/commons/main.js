@@ -24,8 +24,7 @@ toastr.options = {
 	"showMethod" : "fadeIn",
 	"hideMethod" : "fadeOut"
 }
-bdtApp.config(function($logProvider, $stateProvider, $locationProvider,
-		$urlRouterProvider) {
+bdtApp.config(function($logProvider, $stateProvider, $locationProvider, $urlRouterProvider) {
 	$logProvider.debugEnabled(true);
 	$locationProvider.hashPrefix('');
 	$urlRouterProvider.when("", "/home");

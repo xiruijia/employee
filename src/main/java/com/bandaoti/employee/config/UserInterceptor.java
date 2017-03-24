@@ -13,7 +13,7 @@ import com.bandaoti.employee.BaseController;
 import com.bandaoti.employee.ControllerException;
 import com.bandaoti.employee.ReturnCode;
 import com.bandaoti.employee.annotations.EmpAuthority;
-import com.bandaoti.employee.entity.Role;
+import com.bandaoti.employee.vo.RoleVO;
 
 public class UserInterceptor extends BaseController implements HandlerInterceptor {
 	@Override
@@ -25,7 +25,7 @@ public class UserInterceptor extends BaseController implements HandlerIntercepto
 			if(ea!=null){
 				//有标记，就标识需要有权限
 				List<String> roles=new ArrayList<>();
-				List<Role> roless=getUser().getRoles();
+				List<RoleVO> roless=getUser().getRoles();
 				if(roless!=null){
 					roless.forEach(a->roles.add(a.getCode()));
 				}

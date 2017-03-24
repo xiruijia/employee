@@ -5,16 +5,15 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 
 import com.bandaoti.employee.entity.Employee;
-import com.bandaoti.employee.entity.Role;
 
 public class EmployeeVO extends Employee {
-	private List<Role> roles;
+	private List<RoleVO> roles;
 
-	public List<Role> getRoles() {
+	public List<RoleVO> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<Role> roles) {
+	public void setRoles(List<RoleVO> roles) {
 		this.roles = roles;
 	}
 	

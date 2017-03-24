@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.bandaoti.employee.dao.EmpRoleMapper">
-  <resultMap id="BaseResultMap" type="com.bandaoti.employee.entity.EmpRole">
+<mapper namespace="com.bandaoti.employee.dao.RequestRoleMapper">
+  <resultMap id="BaseResultMap" type="com.bandaoti.employee.entity.RequestRole">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="emp_id" jdbcType="INTEGER" property="empId" />
     <result column="role_id" jdbcType="INTEGER" property="roleId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="req_emp_id" jdbcType="INTEGER" property="reqEmpId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -66,15 +69,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, status, emp_id, role_id
+    id, emp_id, role_id, status, req_emp_id, create_time, update_time
   </sql>
-  <select id="selectByExample" parameterType="com.bandaoti.employee.entity.EmpRoleExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.bandaoti.employee.entity.RequestRoleExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from emp_role
+    from request_role
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -85,70 +88,87 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from emp_role
+    from request_role
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from emp_role
+    delete from request_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.bandaoti.employee.entity.EmpRoleExample">
-    delete from emp_role
+  <delete id="deleteByExample" parameterType="com.bandaoti.employee.entity.RequestRoleExample">
+    delete from request_role
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.bandaoti.employee.entity.EmpRole">
+  <insert id="insert" parameterType="com.bandaoti.employee.entity.RequestRole">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into emp_role (status, emp_id, role_id
+    insert into request_role (emp_id, role_id, status, 
+      req_emp_id, create_time, update_time
       )
-    values (#{status,jdbcType=INTEGER}, #{empId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}
+    values (#{empId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
+      #{reqEmpId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.bandaoti.employee.entity.EmpRole">
+  <insert id="insertSelective" parameterType="com.bandaoti.employee.entity.RequestRole">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into emp_role
+    insert into request_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="status != null">
-        status,
-      </if>
       <if test="empId != null">
         emp_id,
       </if>
       <if test="roleId != null">
         role_id,
       </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="reqEmpId != null">
+        req_emp_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
-      </if>
       <if test="empId != null">
         #{empId,jdbcType=INTEGER},
       </if>
       <if test="roleId != null">
         #{roleId,jdbcType=INTEGER},
       </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="reqEmpId != null">
+        #{reqEmpId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.bandaoti.employee.entity.EmpRoleExample" resultType="java.lang.Long">
-    select count(*) from emp_role
+  <select id="countByExample" parameterType="com.bandaoti.employee.entity.RequestRoleExample" resultType="java.lang.Long">
+    select count(*) from request_role
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update emp_role
+    update request_role
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
-      </if>
-      <if test="record.status != null">
-        status = #{record.status,jdbcType=INTEGER},
       </if>
       <if test="record.empId != null">
         emp_id = #{record.empId,jdbcType=INTEGER},
@@ -156,41 +176,68 @@
       <if test="record.roleId != null">
         role_id = #{record.roleId,jdbcType=INTEGER},
       </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.reqEmpId != null">
+        req_emp_id = #{record.reqEmpId,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update emp_role
+    update request_role
     set id = #{record.id,jdbcType=INTEGER},
-      status = #{record.status,jdbcType=INTEGER},
       emp_id = #{record.empId,jdbcType=INTEGER},
-      role_id = #{record.roleId,jdbcType=INTEGER}
+      role_id = #{record.roleId,jdbcType=INTEGER},
+      status = #{record.status,jdbcType=INTEGER},
+      req_emp_id = #{record.reqEmpId,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bandaoti.employee.entity.EmpRole">
-    update emp_role
+  <update id="updateByPrimaryKeySelective" parameterType="com.bandaoti.employee.entity.RequestRole">
+    update request_role
     <set>
-      <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
-      </if>
       <if test="empId != null">
         emp_id = #{empId,jdbcType=INTEGER},
       </if>
       <if test="roleId != null">
         role_id = #{roleId,jdbcType=INTEGER},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="reqEmpId != null">
+        req_emp_id = #{reqEmpId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.bandaoti.employee.entity.EmpRole">
-    update emp_role
-    set status = #{status,jdbcType=INTEGER},
-      emp_id = #{empId,jdbcType=INTEGER},
-      role_id = #{roleId,jdbcType=INTEGER}
+  <update id="updateByPrimaryKey" parameterType="com.bandaoti.employee.entity.RequestRole">
+    update request_role
+    set emp_id = #{empId,jdbcType=INTEGER},
+      role_id = #{roleId,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      req_emp_id = #{reqEmpId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

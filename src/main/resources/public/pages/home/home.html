@@ -14,20 +14,16 @@
 					<td>{{$index+1}}</td>
 					<td>{{role.code}}</td>
 					<td>{{role.name}}</td>
-					<td><button class="btn" ng-click="delRole(role)" ng-disabled="role.code=='admin'">申请</button></td>
+					<td><button class="btn" ng-click="reqRole(role)" ng-disabled="(role.code=='admin') || (role.myStatus==1) || (role.myStatus==2) ">{{role.btnTitle}}</button></td>
 				</tr>
 			</tbody>
+			<tfoot  ng-hide="isLastPage">
+				<tr>
+					<td colspan="4"><span class="center-block btn" ng-click="loadMoreRole()">加载更多...</span></td>
+				</tr>
+			</tfoot>
 		</table>
-		<footer class="panel-footer">
-			<div class="row">
-				<div class="col-xs-12 text-right text-center-xs">
-					<div class="pagination pagination-sm m-t-none m-b-none">
-						<ul uib-pagination boundary-links="true" total-items="totalItems" ng-model="currentPage"
-							class="pagination-sm" max-size="5" previous-text="&lsaquo;" next-text="&rsaquo;"
-							first-text="&laquo;" last-text="&raquo;"></ul>
-					</div>
-				</div>
-			</div>
-		</footer>
 	</div>
+	<!-- 	<uib-pagination total-items="totalItems" ng-model="currentPage" max-size="maxSize" first-text="第一页" -->
+	<!-- 		previous-text="上一页" next-text="下一页" last-text="最后页" boundary-links="true" boundary-link-numbers="true"></uib-pagination> -->
 </div>

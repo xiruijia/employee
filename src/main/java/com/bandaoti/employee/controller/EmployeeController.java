@@ -45,6 +45,13 @@ public class EmployeeController extends BaseController {
 		return success(empVo);
 	}
 	@EmpAuthority
+	@GetMapping("getEmployeeByRole")
+	public ControllerResult getEmployeeByRole(Integer pageNum) throws ControllerException{
+		if(pageNum==null)pageNum=1;
+		String roleCode=getParamNotNull("roleCode");
+		return success(roleService.getEmployeeByRole(roleCode,pageNum));
+	}
+	@EmpAuthority
 	@GetMapping("updateEmployee")
 	public ControllerResult updateEmployee() throws ControllerException{
 		String gender=getParam("gender");

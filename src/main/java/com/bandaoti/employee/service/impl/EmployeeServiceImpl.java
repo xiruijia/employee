@@ -17,7 +17,7 @@ import com.github.pagehelper.util.StringUtil;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired private EmployeeMapper empMapper;
-	public final List<Integer> empStatus=Arrays.asList(1,2);
+	public static final List<Integer> empStatus=Arrays.asList(1,2);
 	
 	@Override
 	public Employee addEmployee(Employee emp) throws ControllerException {

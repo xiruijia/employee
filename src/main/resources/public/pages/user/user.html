@@ -29,7 +29,28 @@
 		<button class="btn btn-lg btn-primary btn-block" type="button" ng-click="register()">注册</button>
 		<div class="btn btn-lg btn-block" ng-click="step='login'">登录</div>
 	</div>
-	<form class="form-horizontal" role="form" ng-show="step=='user'">
+
+	<div class="row user-table" ng-show="step=='user'">
+		<div class="user-box">
+			<a class="glyphicon glyphicon-cog col-xs-12 height-center" href="#user/userInfo">帐号信息
+				<div class="right-arrows glyphicon glyphicon-menu-right"></div>
+			</a>
+		</div>
+		<div class="user-box">
+			<a class="glyphicon glyphicon-user col-xs-12 height-center" href="#user/role">我的角色
+				<span class="badge">{{roles.length}}</span>
+				<div class="right-arrows glyphicon glyphicon-menu-right"></div>
+			</a>
+		</div>
+		<div class="user-box">
+			<a class="glyphicon glyphicon-info-sign col-xs-12 height-center" href="#user/message">我的消息
+				<span class="badge">{{messages.length}}</span>
+				<div class="right-arrows glyphicon glyphicon-menu-right"></div>
+			</a>
+		</div>
+	</div>
+
+	<form class="form-horizontal" role="form" ng-show="step=='userInfo'">
 		<div class="form-group">
 			<label class="col-sm-2 control-label">帐号</label>
 			<div class="col-sm-10">
@@ -80,29 +101,42 @@
 					ng-click="changeEmployee('email',user.email,'只能绑定一次邮箱',$event)">绑定</div>
 			</div>
 		</div>
-
-		<div class="table-responsive" ng-show="roles.length>0">
-			<table class="table">
-				<caption>你所拥有的角色</caption>
-				<thead>
-					<tr>
-						<th>序号</th>
-						<th>代码</th>
-						<th>名称</th>
-						<th>操作</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="role in roles">
-						<td>{{$index+1}}</td>
-						<td>{{role.code}}</td>
-						<td>{{role.name}}</td>
-						<td><button class="btn" ng-click="delRole(role)" ng-disabled="role.code=='admin'">删除</button></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<button class="btn btn-lg btn-primary btn-block" ng-click="logout()">注销</button>
+		<button class="btn btn-lg btn-warning btn-block" ng-click="logout()">注销</button>
 	</form>
 
+	<div class="table-responsive" ng-show="step=='role'">
+		<table class="table">
+			<caption>你所拥有的角色</caption>
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>代码</th>
+					<th>名称</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="role in roles">
+					<td>{{$index+1}}</td>
+					<td>{{role.code}}</td>
+					<td>{{role.name}}</td>
+					<td><button class="btn" ng-click="delRole(role)"
+							ng-disabled="(role.code=='admin') || (role.myStatus==2) ">{{role.myStatus==0?"失效":(role.myStatus==1?"删除":(role.myStatus==2?"申请中":(role.myStatus==3?"申请失败":"")))}}</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="table-responsive" ng-show="step=='message'">
+		<table class="table" ng-show="messages.length>0">
+			<tbody>
+				<tr ng-repeat="msg in messages">
+					<td>员工({{msg.empName}})想申请({{msg.roleName}})角色</td>
+					<td><span ng-click="agree(msg,true)" class="agreement-btn">同意</span>
+					<span ng-click="agree(msg,false)" class="agreement-btn">不同意</span></td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="header" ng-show="messages.length<=0">您现在还没有角色...尴尬了</div>
+	</div>
 </div>
