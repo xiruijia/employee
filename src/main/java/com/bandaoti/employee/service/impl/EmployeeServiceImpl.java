@@ -1,5 +1,6 @@
 package com.bandaoti.employee.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.druid.util.StringUtils;
 import com.bandaoti.employee.ControllerException;
-import com.bandaoti.employee.ListUtil;
 import com.bandaoti.employee.ReturnCode;
 import com.bandaoti.employee.dao.EmployeeMapper;
 import com.bandaoti.employee.entity.Employee;
@@ -17,7 +17,7 @@ import com.github.pagehelper.util.StringUtil;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired private EmployeeMapper empMapper;
-	public final List<Integer> empStatus=ListUtil.asList(1,2);
+	public static final List<Integer> empStatus=Arrays.asList(1,2);
 	
 	@Override
 	public Employee addEmployee(Employee emp) throws ControllerException {
@@ -70,6 +70,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public Boolean updateEmployee(Employee emp) {
 		EmployeeExample example=new EmployeeExample();
 		EmployeeExample.Criteria criteria=example.createCriteria();
+		if(emp.getId()!=null){
+			empMapper.updateByPrimaryKeySelective(emp);
+			return true;
+		}
 		if(!StringUtil.isEmpty(emp.getMobile())){
 			criteria.andMobileEqualTo(emp.getMobile());
 		}else if(!StringUtil.isEmpty(emp.getEmail())){
@@ -117,6 +121,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 		List<Employee> list=empMapper.selectByExample(employeeExample);
 		if(list.size()==1)return list.get(0);
 		return null;
+	}
+
+	@Override
+	public Employee getEmployee(Integer id) {
+		return empMapper.selectByPrimaryKey(id);
 	}
 
 }

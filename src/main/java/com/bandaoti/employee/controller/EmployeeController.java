@@ -1,7 +1,5 @@
 package com.bandaoti.employee.controller;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -11,10 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.bandaoti.employee.BandaotiConstant;
 import com.bandaoti.employee.BaseController;
@@ -25,6 +23,8 @@ import com.bandaoti.employee.ReturnCode;
 import com.bandaoti.employee.annotations.EmpAuthority;
 import com.bandaoti.employee.entity.Employee;
 import com.bandaoti.employee.service.EmployeeService;
+import com.bandaoti.employee.service.RoleService;
+import com.bandaoti.employee.vo.EmployeeVO;
 import com.github.pagehelper.util.StringUtil;
 
 @RestController
@@ -34,16 +34,70 @@ public class EmployeeController extends BaseController {
 	private EmployeeService empService;
 	@Autowired
 	private StringRedisTemplate sRedis;
-	@EmpAuthority({})
-	@PostMapping("getEmployee")
+	@Autowired
+	private RoleService roleService;
+	@EmpAuthority
+	@GetMapping(value="getEmployee")
 	public ControllerResult getEmployee() throws ControllerException {
-		Map<String,Object> result=new HashMap<>();
-		result.put("user", getUser());
-		result.put("roles", getRoles());
-		return success(result);
+		EmployeeVO empVo=getUser();
+		empVo.setRoles(roleService.getRoleByEmpId(empVo.getId()));
+		getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
+		return success(empVo);
+	}
+	@EmpAuthority
+	@GetMapping("getEmployeeByRole")
+	public ControllerResult getEmployeeByRole(Integer pageNum) throws ControllerException{
+		if(pageNum==null)pageNum=1;
+		String roleCode=getParamNotNull("roleCode");
+		return success(roleService.getEmployeeByRole(roleCode,pageNum));
+	}
+	@EmpAuthority
+	@GetMapping("updateEmployee")
+	public ControllerResult updateEmployee() throws ControllerException{
+		String gender=getParam("gender");
+		String email=getParam("email");
+		String mobile=getParam("mobile");
+		String idcard=getParam("idcard");
+		EmployeeVO ev=getUser();
+		Employee emp=new Employee();
+		emp.setId(ev.getId());
+		if(!StringUtils.isEmpty(gender)){
+			if(ev.getGender()==null||ev.getGender()==0){
+				emp.setGender(Integer.parseInt(gender));
+			}else{
+				throw new ControllerException(ReturnCode.ACCOUNT_GENDER_EXIST);
+			}
+		}
+		if(!StringUtils.isEmpty(email)){
+			if(ev.getEmail()==null){
+				emp.setEmail(email);
+			}else{
+				throw new ControllerException(ReturnCode.ACCOUNT_EMAIL_EXIST);
+			}
+		}
+		if(!StringUtils.isEmpty(mobile)){
+			if(ev.getMobile()==null){
+				emp.setMobile(mobile);
+			}else{
+				throw new ControllerException(ReturnCode.ACCOUNT_MOBILE_EXIST);
+			}
+		}
+		if(!StringUtils.isEmpty(idcard)){
+			if(ev.getIdcard()==null){
+				emp.setIdcard(idcard);
+			}else{
+				throw new ControllerException(ReturnCode.ACCOUNT_IDCARD_EXIST);
+			}
+		}
+		empService.updateEmployee(emp);
+		EmployeeVO empVo=new EmployeeVO();
+		emp = empService.getEmployee(emp.getId());
+		empVo.setEmployee(emp);
+		getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
+		return success();
 	}
 	
-	@PostMapping("register")
+	@GetMapping("register")
 	public ControllerResult register(HttpServletResponse response) throws ControllerException{
 		String username=getParamNotNull("name");
 		String password=getParam("password");
@@ -66,45 +120,50 @@ public class EmployeeController extends BaseController {
 		}
 		emp.setName(name);
 		emp.setPassword(password);
+		emp.setGender(0);
 		empService.addEmployee(emp);
-		getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, emp);
-		emp.setPassword(null);
-		return success(emp);
+		EmployeeVO empVo=new EmployeeVO();
+		empVo.setEmployee(emp);
+		getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
+		return success(empVo);
 	}
-	@PostMapping("login")
+	@GetMapping("login")
 	public ControllerResult login(HttpServletResponse response) throws ControllerException {
 		String username = getParamNotNull("name");
 		String password = getParamNotNull("password");
 		String rememberMe = getParam("rememberMe");
+		getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, null);
+		getSession().setAttribute(BandaotiConstant.SESSION_USER_ROLES, null);
+		getSession().setAttribute(BandaotiConstant.SESSION_USER_ROLES_STRING, null);
+		EmployeeVO empVo=new EmployeeVO();
 		Employee emp = empService.getEmployee(username);
 		if (emp == null) {
 			throw new ControllerException(ReturnCode.ACCOUNT_PASSWORD_ERROR);
 		} else if (!emp.getPassword().equals(password)) {
 			throw new ControllerException(ReturnCode.ACCOUNT_PASSWORD_ERROR);
 		}
-		emp.setPassword(null);
-		emp.setStatus(null);
+		empVo.setEmployee(emp);
+		empVo.setRoles(roleService.getRoleByEmpId(emp.getId()));
 		if ("true".equalsIgnoreCase(rememberMe)) {
-			String redisLoginCookieValue = MD5Util.string2MD5("" + emp.getId() + emp.getCreateTime().getTime()) + new Random().nextInt(1000);
+			String redisLoginCookieValue = MD5Util.string2MD5("" + empVo.getId() + empVo.getCreateTime().getTime()) + new Random().nextInt(1000);
 			Cookie cookie = new Cookie(BandaotiConstant.LOGIN_REMEMBER_ME, redisLoginCookieValue);
-			sRedis.opsForValue().set(redisLoginCookieValue, JSON.toJSONString(emp));
+			sRedis.opsForValue().set(redisLoginCookieValue, JSON.toJSONString(empVo));
 			sRedis.boundValueOps(redisLoginCookieValue).expire(7, TimeUnit.DAYS);// 记住两周
 			cookie.setMaxAge(604800);// 秒：60*60*24*7//记住7天
 			cookie.setPath("/");
 			response.addCookie(cookie);
-			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, emp);
+			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
 			// 记住我
 		} else {
-			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, emp);
+			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
 		}
-		Map<String,Object> result=new HashMap<>();
-		result.put("user", emp);
-		result.put("roles",getRoles());
-		return success(result);
+		return success(empVo);
 	}
 	@GetMapping("logout")
 	public ControllerResult logout(){
 		getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, null);
+		getSession().setAttribute(BandaotiConstant.SESSION_USER_ROLES, null);
+		getSession().setAttribute(BandaotiConstant.SESSION_USER_ROLES_STRING, null);
 		String key=getCookie(BandaotiConstant.LOGIN_REMEMBER_ME);
 		if(!StringUtil.isEmpty(key)&&sRedis.hasKey(key)){
 			sRedis.delete(key);
