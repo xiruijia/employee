@@ -29,7 +29,7 @@ bdtApp.config(function($logProvider, $stateProvider, $locationProvider, $urlRout
 	$locationProvider.hashPrefix('');
 	$urlRouterProvider.when("", "/home");
 	$stateProvider.state('home', {
-		url : '/home',
+		url : '/home/:code',
 		templateUrl : '../pages/home/home.html',
 		controller : 'homeController' // 也可以写成HomeController as home
 	}).state('about', {

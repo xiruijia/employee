@@ -13,6 +13,8 @@ import com.bandaoti.employee.dao.EmployeeMapper;
 import com.bandaoti.employee.entity.Employee;
 import com.bandaoti.employee.entity.EmployeeExample;
 import com.bandaoti.employee.service.EmployeeService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -126,6 +128,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public Employee getEmployee(Integer id) {
 		return empMapper.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public PageInfo<Employee> getEmployee(Integer pageNum, Integer pageSize) {
+		PageHelper.startPage(pageNum,pageSize);
+		EmployeeExample example=new EmployeeExample();
+		example.createCriteria().andStatusIn(empStatus);
+		List<Employee> emps=empMapper.selectByExample(example);
+		System.out.println(emps.size());
+		return new PageInfo<Employee>(emps);
 	}
 
 }

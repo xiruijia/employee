@@ -84,7 +84,12 @@ public class BaseController {
 			if(!StringUtil.isEmpty(redisKey)){
 				String userJson=getsRedis().opsForValue().get(redisKey);
 				if(!StringUtil.isEmpty(userJson)){
+					try{
 					user= JSON.parseObject(userJson, EmployeeVO.class);
+					}catch(com.alibaba.fastjson.JSONException e){
+						getsRedis().delete(redisKey);
+						throw new ControllerException(ReturnCode.USER_NOT_LOGIN);
+					}
 					getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, user);
 					return user;
 				}

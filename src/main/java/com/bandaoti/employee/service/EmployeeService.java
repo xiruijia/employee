@@ -3,6 +3,7 @@ package com.bandaoti.employee.service;
 import com.bandaoti.employee.ControllerException;
 import com.bandaoti.employee.EmployeeType;
 import com.bandaoti.employee.entity.Employee;
+import com.github.pagehelper.PageInfo;
 
 public interface EmployeeService {
 	Employee addEmployee(Employee emp) throws ControllerException;
@@ -41,4 +42,6 @@ public interface EmployeeService {
 		}
 		return emp;
 	}
+
+	PageInfo<Employee> getEmployee(Integer pageNum, Integer pageSize);
 }

@@ -1,11 +1,31 @@
-bdtApp.controller('homeController', function($scope, UserService, HttpService, ModalService) {
+bdtApp.controller('homeController', function($scope,$stateParams, UserService, HttpService, ModalService) {
 	$scope.showLogin = false;
 	$scope.userInfo = {};
+	$scope.tag=$stateParams.code;
+	if($scope.tag==null || $scope.tag=='')$scope.tag='emp';
 	UserService.getUser().then(function(res) {
 		$scope.userInfo = res;
 	});
+	$scope.isAdmin=false;
 	$scope.roleAll = [];
+	$scope.emps=[];
 	$scope.currentPage = 1; // 当前页
+	
+	$scope.getEmployee = function() {
+		HttpService.post("/employee/findEmployee", {
+			pageNum : $scope.currentPage
+		}).then(function(res) {
+			if (res.code == 0) {
+				for (var i = 0; i < res.data.list.length; i++) {
+					var data=res.data.list[i];
+					$scope.emps.push(data);
+				}
+				$scope.isLastPage = res.data.isLastPage;
+			} else {
+				ModalService.toastr.error("网络错误");
+			}
+		});
+	}
 	// 获取所有角色，和用户角色
 	$scope.getRoles = function() {
 		HttpService.post("/role/findRole", {
@@ -17,6 +37,7 @@ bdtApp.controller('homeController', function($scope, UserService, HttpService, M
 				$scope.isLastPage = roles.isLastPage;
 				var myRoleStatus={};
 				for(var i=0;i<myRoles.length;i++){
+					if(myRoles[i].code=='admin')$scope.isAdmin=true;
 					myRoleStatus[myRoles[i].code]=myRoles[i].myStatus;
 				}
 				for (var i = 0; i < roles.list.length; i++) {
@@ -41,7 +62,11 @@ bdtApp.controller('homeController', function($scope, UserService, HttpService, M
 	// 加载更多
 	$scope.loadMoreRole = function() {
 		$scope.currentPage += 1;
-		$scope.getRoles();
+		if($scope.tag=='role'){
+			$scope.getRoles();
+		}else if($scope.tag=='emp'){
+			$scope.getEmployee();
+		}
 	}
 	// 申请权限
 	$scope.reqRole = function(role) {
@@ -72,5 +97,10 @@ bdtApp.controller('homeController', function($scope, UserService, HttpService, M
 			}
 		})
 	}
-	$scope.getRoles();
+	if($scope.tag=='role'){
+		$scope.getRoles();
+	}
+	if($scope.tag=='emp'){
+		$scope.getEmployee();
+	}
 });
