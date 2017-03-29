@@ -29,7 +29,7 @@ public class RoleController extends BaseController {
 	@GetMapping("findRole")
 	public ControllerResult findRole(String roleName,Integer pageNum,Integer pageSize){
 		if(pageNum==null||pageNum<1)pageNum=1;
-		if(pageSize==null||pageSize<1)pageSize=10;
+		if(pageSize==null||pageSize<1)pageSize=5;
 		PageInfo<Role> roles=roleService.getRoles(roleName,pageNum,pageSize);
 		Map<String,Object> result=new HashMap<>();
 		result.put("roles", roles);

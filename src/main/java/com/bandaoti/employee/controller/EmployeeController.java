@@ -25,6 +25,7 @@ import com.bandaoti.employee.entity.Employee;
 import com.bandaoti.employee.service.EmployeeService;
 import com.bandaoti.employee.service.RoleService;
 import com.bandaoti.employee.vo.EmployeeVO;
+import com.github.pagehelper.PageInfo;
 import com.github.pagehelper.util.StringUtil;
 
 @RestController
@@ -36,6 +37,17 @@ public class EmployeeController extends BaseController {
 	private StringRedisTemplate sRedis;
 	@Autowired
 	private RoleService roleService;
+	/**
+	 * 查询用户
+	 * @return
+	 */
+	@EmpAuthority
+	@GetMapping("findEmployee")
+	public ControllerResult findEmployee(Integer pageNum){
+		PageInfo<Employee> emps=empService.getEmployee(pageNum,5);
+		return success(emps);
+	}
+	
 	@EmpAuthority
 	@GetMapping(value="getEmployee")
 	public ControllerResult getEmployee() throws ControllerException {
