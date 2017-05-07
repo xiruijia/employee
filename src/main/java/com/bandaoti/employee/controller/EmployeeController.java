@@ -1,24 +1,17 @@
 package com.bandaoti.employee.controller;
 
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.druid.util.StringUtils;
-import com.alibaba.fastjson.JSON;
 import com.bandaoti.employee.BandaotiConstant;
 import com.bandaoti.employee.BaseController;
 import com.bandaoti.employee.ControllerException;
 import com.bandaoti.employee.ControllerResult;
-import com.bandaoti.employee.MD5Util;
 import com.bandaoti.employee.ReturnCode;
 import com.bandaoti.employee.annotations.EmpAuthority;
 import com.bandaoti.employee.entity.Employee;
@@ -26,15 +19,12 @@ import com.bandaoti.employee.service.EmployeeService;
 import com.bandaoti.employee.service.RoleService;
 import com.bandaoti.employee.vo.EmployeeVO;
 import com.github.pagehelper.PageInfo;
-import com.github.pagehelper.util.StringUtil;
 
 @RestController
 @RequestMapping("employee")
 public class EmployeeController extends BaseController {
 	@Autowired
 	private EmployeeService empService;
-	@Autowired
-	private StringRedisTemplate sRedis;
 	@Autowired
 	private RoleService roleService;
 	/**
@@ -157,14 +147,6 @@ public class EmployeeController extends BaseController {
 		empVo.setEmployee(emp);
 		empVo.setRoles(roleService.getRoleByEmpId(emp.getId()));
 		if ("true".equalsIgnoreCase(rememberMe)) {
-			String redisLoginCookieValue = MD5Util.string2MD5("" + empVo.getId() + empVo.getCreateTime().getTime()) + new Random().nextInt(1000);
-			Cookie cookie = new Cookie(BandaotiConstant.LOGIN_REMEMBER_ME, redisLoginCookieValue);
-			sRedis.opsForValue().set(redisLoginCookieValue, JSON.toJSONString(empVo));
-			sRedis.boundValueOps(redisLoginCookieValue).expire(7, TimeUnit.DAYS);// 记住两周
-			cookie.setMaxAge(604800);// 秒：60*60*24*7//记住7天
-			cookie.setPath("/");
-			response.addCookie(cookie);
-			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
 			// 记住我
 		} else {
 			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
@@ -176,10 +158,6 @@ public class EmployeeController extends BaseController {
 		getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, null);
 		getSession().setAttribute(BandaotiConstant.SESSION_USER_ROLES, null);
 		getSession().setAttribute(BandaotiConstant.SESSION_USER_ROLES_STRING, null);
-		String key=getCookie(BandaotiConstant.LOGIN_REMEMBER_ME);
-		if(!StringUtil.isEmpty(key)&&sRedis.hasKey(key)){
-			sRedis.delete(key);
-		}
 		return success();
 	}
 }
