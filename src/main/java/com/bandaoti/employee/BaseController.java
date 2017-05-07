@@ -87,6 +87,7 @@ public class BaseController {
 
 	public EmployeeVO getUser() throws ControllerException {
 		EmployeeVO user = (EmployeeVO) getSession().getAttribute(BandaotiConstant.LOGIN_REMEMBER_ME);
+		if(user==null)throw new ControllerException(ReturnCode.USER_NOT_LOGIN);
 		return user;
 	}
 
