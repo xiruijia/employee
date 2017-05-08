@@ -87,8 +87,18 @@ public class BaseController {
 
 	public EmployeeVO getUser() throws ControllerException {
 		EmployeeVO user = (EmployeeVO) getSession().getAttribute(BandaotiConstant.LOGIN_REMEMBER_ME);
-		if(user==null)throw new ControllerException(ReturnCode.USER_NOT_LOGIN);
-		return user;
+		if(user==null){
+			if(request.getCookies()!=null){
+				for(Cookie c:request.getCookies()){
+					if(c.getName().equalsIgnoreCase(BandaotiConstant.LOGIN_REMEMBER_ME)){
+						
+					}
+				}
+			}
+		}else{
+			return user;
+		}
+		throw new ControllerException(ReturnCode.USER_NOT_LOGIN);
 	}
 
 	public String getCookie(String name) {

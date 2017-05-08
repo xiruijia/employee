@@ -1,5 +1,8 @@
 package com.bandaoti.employee.controller;
 
+import java.util.Base64;
+
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import com.bandaoti.employee.BandaotiConstant;
 import com.bandaoti.employee.BaseController;
 import com.bandaoti.employee.ControllerException;
 import com.bandaoti.employee.ControllerResult;
+import com.bandaoti.employee.MD5Util;
 import com.bandaoti.employee.ReturnCode;
 import com.bandaoti.employee.annotations.EmpAuthority;
 import com.bandaoti.employee.entity.Employee;
@@ -19,6 +23,8 @@ import com.bandaoti.employee.service.EmployeeService;
 import com.bandaoti.employee.service.RoleService;
 import com.bandaoti.employee.vo.EmployeeVO;
 import com.github.pagehelper.PageInfo;
+
+import io.jsonwebtoken.*;
 
 @RestController
 @RequestMapping("employee")
@@ -148,6 +154,11 @@ public class EmployeeController extends BaseController {
 		empVo.setRoles(roleService.getRoleByEmpId(emp.getId()));
 		if ("true".equalsIgnoreCase(rememberMe)) {
 			// 记住我
+			String Token=MD5Util.string2MD5(empVo.getName()+'#'+3600000+'#'+empVo.getPassword());
+			Cookie cookie=new Cookie(BandaotiConstant.LOGIN_REMEMBER_ME, Base64.getEncoder().encodeToString(empVo.getName()+"#"+3600000+"#"+Token));
+			cookie.setMaxAge(1000*30);
+			response.addCookie(cookie);
+			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
 		} else {
 			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
 		}
