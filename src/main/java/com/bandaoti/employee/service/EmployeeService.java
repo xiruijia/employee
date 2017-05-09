@@ -44,4 +44,6 @@ public interface EmployeeService {
 	}
 
 	PageInfo<Employee> getEmployee(Integer pageNum, Integer pageSize);
+
+	void delEmployeeById(Integer id);
 }

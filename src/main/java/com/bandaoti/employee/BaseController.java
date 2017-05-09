@@ -10,6 +10,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
+import com.bandaoti.employee.entity.Employee;
+import com.bandaoti.employee.service.EmployeeService;
 import com.bandaoti.employee.vo.EmployeeVO;
 
 public class BaseController {
@@ -88,10 +90,27 @@ public class BaseController {
 	public EmployeeVO getUser() throws ControllerException {
 		EmployeeVO user = (EmployeeVO) getSession().getAttribute(BandaotiConstant.LOGIN_REMEMBER_ME);
 		if(user==null){
+			String value=null;
 			if(request.getCookies()!=null){
 				for(Cookie c:request.getCookies()){
 					if(c.getName().equalsIgnoreCase(BandaotiConstant.LOGIN_REMEMBER_ME)){
-						
+						value=c.getValue();
+					}
+				}
+			}
+			if(value!=null){
+				value=MD5Util.charDeCoding(value);
+				String[] cs=value.split("#\\|");
+				if(cs.length==2){
+					String username=cs[0];
+					String password=cs[1];
+					Employee emp=Application.application.getBean(EmployeeService.class).getEmployee(username);
+					if(password.equals(emp.getPassword())){
+						EmployeeVO empv= new EmployeeVO().setEmployee(emp);
+						HttpSession session=getSession();
+						if(session!=null)
+							session.setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empv);
+						return empv;
 					}
 				}
 			}
@@ -112,5 +131,4 @@ public class BaseController {
 		}
 		return null;
 	}
-
 }

@@ -7,7 +7,7 @@ import java.security.MessageDigest;
  *
  */
 public class MD5Util {
-
+	public static final int ENCODING_NUM=10;
 	/***
 	 * MD5加码 生成32位大写md5码
 	 */
@@ -35,5 +35,24 @@ public class MD5Util {
 		}
 		return hexValue.toString().toUpperCase();
 
+	}
+
+	public static String charEnCoding(String value){
+		String kValue="";
+		for(int i=0;i<value.length();i++){
+			char c=value.charAt(i);
+			c+=ENCODING_NUM;
+			kValue+=c;
+		}
+		return kValue;
+	}
+	public static String charDeCoding(String value){
+		String cc="";
+		for(int i=0;i<value.length();i++){
+			char c=value.charAt(i);
+			c-=ENCODING_NUM;
+			cc+=c;
+		}
+		return cc;
 	}
 }

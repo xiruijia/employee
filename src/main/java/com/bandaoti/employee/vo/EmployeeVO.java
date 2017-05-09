@@ -16,15 +16,16 @@ public class EmployeeVO extends Employee {
 	public void setRoles(List<RoleVO> roles) {
 		this.roles = roles;
 	}
-	
-	public void setEmployee(Employee emp){
-		if(emp!=null)
-		BeanUtils.copyProperties(emp, this);
+
+	public EmployeeVO setEmployee(Employee emp) {
+		if (emp != null)
+			BeanUtils.copyProperties(emp, this);
+		return this;
 	}
-	
+
 	@Override
 	public String getPassword() {
 		return null;
 	}
-	
+
 }

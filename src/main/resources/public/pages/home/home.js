@@ -10,7 +10,19 @@ bdtApp.controller('homeController', function($scope,$stateParams, UserService, H
 	$scope.roleAll = [];
 	$scope.emps=[];
 	$scope.currentPage = 1; // 当前页
-	
+	$scope.delEmp=function(emp){
+		ModalService.yesno({},function(){
+			HttpService.post("/employee/delEmployee",{id:emp.id}).then(function(res) {
+				if(res.code==0){
+					$scope.isAdmin=false;
+					$scope.roleAll = [];
+					$scope.emps=[];
+					$scope.currentPage = 1; // 当前页
+					$scope.getEmployee();
+				}
+			});
+		})
+	}
 	$scope.getEmployee = function() {
 		HttpService.post("/employee/findEmployee", {
 			pageNum : $scope.currentPage
@@ -20,6 +32,7 @@ bdtApp.controller('homeController', function($scope,$stateParams, UserService, H
 					var data=res.data.list[i];
 					$scope.emps.push(data);
 				}
+				$scope.getRoles();
 				$scope.isLastPage = res.data.isLastPage;
 			} else {
 				ModalService.toastr.error("网络错误");
@@ -37,7 +50,9 @@ bdtApp.controller('homeController', function($scope,$stateParams, UserService, H
 				$scope.isLastPage = roles.isLastPage;
 				var myRoleStatus={};
 				for(var i=0;i<myRoles.length;i++){
-					if(myRoles[i].code=='admin')$scope.isAdmin=true;
+					if(myRoles[i].code=='admin'){
+						$scope.isAdmin=true;
+					}
 					myRoleStatus[myRoles[i].code]=myRoles[i].myStatus;
 				}
 				for (var i = 0; i < roles.list.length; i++) {

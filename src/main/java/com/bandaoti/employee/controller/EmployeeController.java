@@ -1,7 +1,5 @@
 package com.bandaoti.employee.controller;
 
-import java.util.Base64;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,8 +22,6 @@ import com.bandaoti.employee.service.RoleService;
 import com.bandaoti.employee.vo.EmployeeVO;
 import com.github.pagehelper.PageInfo;
 
-import io.jsonwebtoken.*;
-
 @RestController
 @RequestMapping("employee")
 public class EmployeeController extends BaseController {
@@ -43,7 +39,12 @@ public class EmployeeController extends BaseController {
 		PageInfo<Employee> emps=empService.getEmployee(pageNum,5);
 		return success(emps);
 	}
-	
+	@EmpAuthority
+	@GetMapping("delEmployee")
+	public ControllerResult delEmployee(Employee emp){
+		empService.delEmployeeById(emp.getId());
+		return success();
+	}
 	@EmpAuthority
 	@GetMapping(value="getEmployee")
 	public ControllerResult getEmployee() throws ControllerException {
@@ -154,9 +155,10 @@ public class EmployeeController extends BaseController {
 		empVo.setRoles(roleService.getRoleByEmpId(emp.getId()));
 		if ("true".equalsIgnoreCase(rememberMe)) {
 			// 记住我
-			String Token=MD5Util.string2MD5(empVo.getName()+'#'+3600000+'#'+empVo.getPassword());
-			Cookie cookie=new Cookie(BandaotiConstant.LOGIN_REMEMBER_ME, Base64.getEncoder().encodeToString(empVo.getName()+"#"+3600000+"#"+Token));
-			cookie.setMaxAge(1000*30);
+			String value=MD5Util.charEnCoding(username+"#|"+emp.getPassword());
+			Cookie cookie=new Cookie(BandaotiConstant.LOGIN_REMEMBER_ME,value);
+			cookie.setMaxAge(604800);// 秒：60*60*24*7//记住7天
+			cookie.setPath("/");
 			response.addCookie(cookie);
 			getSession().setAttribute(BandaotiConstant.LOGIN_REMEMBER_ME, empVo);
 		} else {
